@@ -1,0 +1,997 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>النظام الانتخابي - إحصائية المراكز</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #1a5276;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #17202a;
+            --gold-color: #d4af37;
+            --header-bg: #2c3e50;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--header-bg), #34495e);
+            color: white;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gold-color), #f1c40f, var(--gold-color));
+        }
+        
+        h1 {
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        h2 {
+            color: var(--secondary-color);
+            margin: 20px 0;
+            font-size: 1.8rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        h2::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold-color), transparent);
+        }
+        
+        h3 {
+            color: var(--primary-color);
+            margin: 15px 0;
+            font-size: 1.4rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #eee;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .person-list, .center-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .person-item, .center-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary-color);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            border: 1px solid #eee;
+        }
+        
+        .person-item:hover, .center-item:hover {
+            background: #f8f9fa;
+            transform: translateX(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-left-color: var(--gold-color);
+        }
+        
+        .person-name {
+            font-weight: bold;
+            color: var(--dark-color);
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .person-phone {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .votes-count {
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            align-self: flex-start;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: right;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tr:hover {
+            background-color: #e9f7fe;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin: 5px;
+            text-decoration: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn i {
+            margin-left: 5px;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        .btn-gold {
+            background: var(--gold-color);
+            color: var(--dark-color);
+            font-weight: bold;
+        }
+        
+        .btn-gold:hover {
+            background: #f1c40f;
+        }
+        
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .search-box {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 300px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+            outline: none;
+        }
+        
+        .print-only {
+            display: none;
+        }
+        
+        .print-header {
+            display: none;
+        }
+        
+        @media print {
+            @page {
+                size: A4;
+                margin: 15mm;
+            }
+            
+            body {
+                background: white;
+                font-size: 12pt;
+                color: black;
+                line-height: 1.4;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+            
+            .print-only {
+                display: block !important;
+            }
+            
+            .print-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid var(--primary-color);
+            }
+            
+            .print-logo {
+                height: 60px;
+            }
+            
+            .print-title {
+                text-align: center;
+                flex-grow: 1;
+            }
+            
+            .print-title h2 {
+                color: black;
+                margin: 0;
+                padding: 0;
+            }
+            
+            .print-title h2::after {
+                display: none;
+            }
+            
+            .print-details {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #eee;
+            }
+            
+            .container {
+                box-shadow: none;
+                padding: 0;
+                margin: 0;
+                width: 100%;
+                max-width: 100%;
+            }
+            
+            table {
+                page-break-inside: auto;
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+            
+            tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+            
+            th {
+                background-color: white !important;
+                color: black !important;
+                border-bottom: 2px solid var(--primary-color);
+            }
+            
+            td {
+                border-bottom: 1px solid #eee;
+            }
+            
+            h1, h2, h3 {
+                page-break-after: avoid;
+                color: black !important;
+            }
+            
+            .card, .person-item, .center-item {
+                box-shadow: none;
+                border: none;
+                page-break-inside: avoid;
+            }
+            
+            .watermark {
+                position: fixed;
+                bottom: 0;
+                right: 0;
+                opacity: 0.1;
+                font-size: 72pt;
+                color: var(--primary-color);
+                transform: rotate(-15deg);
+                pointer-events: none;
+                z-index: -1;
+            }
+        }
+        
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            min-width: 200px;
+            margin: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-top: 4px solid var(--primary-color);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-top-color: var(--gold-color);
+        }
+        
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .center-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .badge-gold {
+            background: var(--gold-color);
+            color: var(--dark-color);
+        }
+        
+        .watermark {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .person-list, .center-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .search-box {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .stats-container {
+                flex-direction: column;
+            }
+            
+            .stat-card {
+                width: 100%;
+            }
+            
+            header {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animated {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="no-print">
+            <h1>النظام الانتخابي - إحصائية المراكز</h1>
+            <p>نظام متكامل لإدارة البيانات الانتخابية</p>
+        </header>
+        
+        <div class="no-print action-bar animated">
+            <div>
+                <button id="print-btn" class="btn btn-gold">
+                    <i class="fas fa-print"></i> طباعة التقرير
+                </button>
+                <button id="export-btn" class="btn btn-secondary">
+                    <i class="fas fa-file-export"></i> تصدير البيانات
+                </button>
+            </div>
+            <input type="text" class="search-box" placeholder="ابحث عن ناخب، مركز أو مسؤول..." id="search-input">
+        </div>
+        
+        <div id="view" class="animated"></div>
+    </div>
+
+    <script>
+        const persons = [
+            {
+                name: "عبدالكريم معمر أبو عمران",
+                phone: "07518318967",
+                position: "",
+                data: [
+                    {name:"محمود عبدالباري يونس", id:"13569695", center:"مدرسة الفاروق الابتدائية للبنين"},
+                    {name:"سبأ عمر سالم", id:"13598669", center:"مدرسة الفاروق الابتدائية للبنين"},
+                    {name:"زينه خالد حامد", id:"13297086", center:"مدرسة القعقاع"},
+                    {name:"امنه عمار سالم", id:"13592182", center:"مدرسة الفاروق الابتدائية للبنين"},
+                    {name:"مسيرة خالد كاظم", id:"13363272", center:"مدرسة البواسل"},
+                    {name:"مودة سليمان يونس", id:"13296249", center:"مدرسة القعقاع"},
+                    {name:"واردة حامد داؤد", id:"13569822", center:"مدرسة الفاروق الابتدائية للبنين"},
+                    {name:"ابراهيم خليل ابراهيم", id:"90031782", center:"اعدادية خالد بن الوليد"},
+                    {name:"فيصل ابراهيم خليل", id:"13426825", center:"اعدادية خالد بن الوليد"},
+                    {name:"عبدالكريم محمد عبدالباري", id:"13599131", center:"مدرسة الفاروق الابتدائية للبنين"},
+                    {name:"سليمان يونس عبدالله", id:"13296924", center:"مدرسة القعقاع"},
+                    {name:"ابراهيم حسين عطيه", id:"12300685", center:"مدرسة اشوا الابتدائية"},
+                    {name:"حفصه خالد كاظم", id:"13602330", center:"مدرسة الفاروق الابتدائية للبنين"},
+                    {name:"اية سليمان يونس", id:"13296627", center:"مدرسة القعقاع"},
+                    {name:"نجلاء عطالله حامد", id:"13598939", center:"مدرسة الفاروق الابتدائية للبنين"},
+                    {name:"مهديه صالح احمد", id:"13426265", center:"اعدادية خالد بن الوليد"},
+                    {name:"علي ميسر طه", id:"13890907", center:"اعدادية ميسلون للبنات"},
+                    {name:"فيان ذنون يونس", id:"13257761", center:"مدرسة الفاروق الابتدائية للبنين"},
+                    {name:"سحر قاسم محمد", id:"13937765", center:"مدرسة ذات النطاقين للبنات"},
+                    {name:"هديل عبدالباري يونس", id:"13598947", center:"مدرسة الفاروق الابتدائية للبنين"},
+                    {name:"نور عبدالباري يونس", id:"13570048", center:"مدرسة البواسل"},
+                    {name:"سيف صديق احمد", id:"13517464", center:"مدرسة الوليد الابتدائية للبنبن"},
+                    {name:"احمد ابراهيم خليل", id:"13440664", center:"اعدادية خالد بن الوليد"},
+                    {name:"محمد بشار صالح", id:"12058019", center:"متوسطة الوثبة للبنين"},
+                    {name:"وسن محسن حسين", id:"13592420", center:"مدرسة الفاروق الابتدائية للبنين"},
+                    {name:"علي قاسم يونس", id:"13064120", center:"اعدادية الطلائع"},
+                    {name:"افكار عادل ناصر", id:"12057643", center:"متوسطة الوثبة للبنين"},
+                    {name:"رؤى معمر عبدالباري", id:"13598940", center:"مدرسة الفاروق الابتدائية للبنين"},
+                    {name:"غفران قاسم يونس", id:"13063937", center:"متوسطة الوثبة للبنين"},
+                    {name:"عبدالباري يونس عبدالله", id:"13570247", center:"مدرسة الفاروق الابتدائية للبنين"},
+                    {name:"يونس معمر عبدالباري", id:"13602181", center:"مدرسة الفاروق الابتدائية للبنين"},
+                    {name:"رحمه سليمان يونس", id:"13297006", center:"مدرسة القعقاع"},
+                    {name:"عصام عمار سالم", id:"13591941", center:"مدرسة الفاروق الابتدائية للبنين"},
+                    {name:"بشار صالح طه", id:"12057316", center:"متوسطة الوثبة للبنين"},
+                    {name:"احمد بشار صالح", id:"12057945", center:"متوسطة الوثبة للبنين"},
+                    {name:"معمر عبدالباري يونس", id:"13599458", center:"مدرسة الفاروق الابتدائية للبنين"},
+                    {name:"اية بشار صالح", id:"59469152", center:"متوسطة الوثبة للبنين"},
+                    {name:"نجوى عبدالجبار يوسف", id:"12136668", center:"مدرسة حمام العليل للبنين"},
+                    {name:"ياسر بشار صالح", id:"12057695", center:"متوسطة الوثبة للبنين"},
+                    {name:"فيصل ممتاز احمد العليوي", id:"13989456", center:"مدرسة الانتصار للبنين"},
+                    {name:"جهاد ممتاز احمد العليوي", id:"13984380", center:"مدرسة الانتصار للبنين"},
+                    {name:"حنان ثائر سليمان العلي", id:"13386675", center:"مدرسة الانتصار للبنين"},
+                    {name:"صادق ممتاز احمد العليوي", id:"13984456", center:"مدرسة الانتصار للبنين"},
+                    {name:"عبدالرزاق ممتاز احمد العليوي", id:"13984333", center:"مدرسة الانتصار للبنين"},
+                ]
+            },
+            {
+                name: "محمد النعيمي / الشيخ بنيان",
+                phone: "07700444245",
+                position: "منسق المنطقة الجنوبية",
+                data: [
+                    {name:"اشرف سعد يونس", id:"13954342", center:"اعدادية ميسلون للبنات"},
+                    {name:"ايمن سعد يونس", id:"13954461", center:"اعدادية ميسلون للبنات"},
+                    {name:"ايمان محمد حسن", id:"13954302", center:"اعدادية ميسلون للبنات"},
+                    {name:"ريم حسان حسون", id:"13506340", center:"مدرسة المكاسب للبنين"},
+                    {name:"سعد يونس محمود", id:"13954377", center:"اعدادية ميسلون للبنات"},
+                    {name:"رغد محمود يونس", id:"14022271", center:"اعدادية ميسلون للبنات"},
+                    {name:"محمد يونس محمد", id:"13500455", center:"مدرسة الرحمة الابتدائية للبنات"},
+                    {name:"نور محمد محمود", id:"13972424", center:"اعدادية ميسلون للبنات"},
+                    {name:"منى صلاحالدين بلال", id:"13979887", center:"اعدادية ميسلون للبنات"},
+                    {name:"رحمه رمضان خضير", id:"14066374", center:"مدرسة كوكجلي الاولى الابتدائية للبنين"},
+                    {name:"وليد خالد ابراهيم", id:"14321963", center:"مدرسة كوكجلي الاولى الابتدائية للبنين"},
+                    {name:"هبة امير عبدالله", id:"13426340", center:"مدرسة الفاروق للبنين"},
+                    {name:"فارس احمد محمد", id:"13957374", center:"اعدادية ميسلون للبنات"},
+                    {name:"خليل ابراهيم حسين", id:"11817951", center:"ابتدائية الهذيل المختلطة"},
+                    {name:"فضيله محمد صادق", id:"13947960", center:"مدرسة النهروان الابتدائية للبنين"},
+                    {name:"موفق رمضان حسن", id:"13948002", center:"مدرسة النهروان الابتدائية للبنين"},
+                    {name:"جميل ابراهيم حسين", id:"59540183", center:"مدرسة القيروان التكميلية للبنات"},
+                    {name:"محمد خضير غزال", id:"14021331", center:"متوسطة النهروان للبنين"},
+                    {name:"آمنة علي كعود", id:"14021214", center:"متوسطة النهروان للبنين"},
+                    {name:"نهاد سالم حسين", id:"14020151", center:"مدرسة الابطال الابتدائية للبنين"},
+                    {name:"فائزة مهدي صالح", id:"13916004", center:"مدرسة ابن خلدون الابتدائية للبنين"},
+                    {name:"محمد عباس حسين", id:"13423415", center:"متوسطة بدر الكبرى للبنين"},
+                    {name:"ميادة هاشم شيت", id:"13890745", center:"متوسطة صلاح الدين الايوبي للبنين"},
+                    {name:"غفران عبدالباسط عباس", id:"13579587", center:"اعدادية موصل الجديدة للبنين"},
+                    {name:"ساهرة نجم علي", id:"13604775", center:"اعدادية موصل الجديدة للبنين"},
+                    {name:"نشوان يحيى نجم", id:"13604814", center:"اعدادية موصل الجديدة للبنات"},
+                    {name:"بدران الياس عبدالله", id:"13903814", center:"متوسطة طارق بن زياد للبنين"},
+                    {name:"فواز محمد سرحان", id:"13908967", center:"ثانوية الرسالة للبنات"},
+                    {name:"عيدة احمد محمد", id:"13909002", center:"ثانوية الرسالة للبنات"},
+                    {name:"وفاء ابراهيم حسين", id:"11817305", center:"مدرسة القيروان التكميلية للبنات"},
+                    {name:"سحر محمد علي", id:"11828133", center:"متوسطة بايع للبنين"},
+                    {name:"زينب علي احمد", id:"13461757", center:"متوسطة الفاروق للبنين"},
+                    {name:"خالد برجس سلطان", id:"13942857", center:"مدرسة الانتصار للبنين"},
+                    {name:"مروان محمد خالد", id:"13946697", center:"اعدادية ميسلون للبنات"},
+                    {name:"ريان محمد خالد", id:"13946843", center:"اعدادية ميسلون للبنات"},
+                    {name:"اميره برجس سلطان", id:"13943260", center:"مدرسة الانتصار للبنين"},
+                ]
+            }
+        ];
+
+        const view = document.getElementById("view");
+        const searchInput = document.getElementById("search-input");
+        const printBtn = document.getElementById("print-btn");
+        const exportBtn = document.getElementById("export-btn");
+        
+        // Set print date
+        const today = new Date();
+        const printDate = today.toLocaleDateString('ar-EG', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+        
+        // Event listeners
+        printBtn.addEventListener('click', printPage);
+        exportBtn.addEventListener('click', exportData);
+        searchInput.addEventListener('input', handleSearch);
+        
+        function printPage() {
+            const currentView = view.innerHTML;
+            
+            // Check if we're viewing a specific center's votes
+            if (currentView.includes('print-center-details')) {
+                printCenterDetails();
+            } else {
+                window.print();
+            }
+        }
+        
+        function printCenterDetails() {
+            const originalView = view.innerHTML;
+            
+            // Create a print-specific view
+            const printView = `
+                <div class="print-header">
+                    <div class="print-title">
+                        <h2>تقرير المركز الانتخابي</h2>
+                        ${originalView.match(/<div class="print-center-details">([\s\S]*?)<\/div>/)[0]}
+                    </div>
+                </div>
+                ${originalView.match(/<table[\s\S]*?<\/table>/)[0]}
+                <div class="watermark">سري</div>
+            `;
+            
+            view.innerHTML = printView;
+            window.print();
+            view.innerHTML = originalView;
+        }
+        
+        function exportData() {
+            // Enhanced export function with more options
+            const dataStr = JSON.stringify({
+                title: "البيانات الانتخابية",
+                generatedAt: new Date().toISOString(),
+                persons: persons.map(p => ({
+                    name: p.name,
+                    position: p.position,
+                    phone: p.phone,
+                    totalVotes: p.data.length,
+                    centers: [...new Set(p.data.map(d => d.center))].length
+                })),
+                stats: getSystemStats()
+            }, null, 2);
+            
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            const exportFileDefaultName = `البيانات_الانتخابية_${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+        
+        function getSystemStats() {
+            const totalPersons = persons.length;
+            const totalVotes = persons.reduce((sum, p) => sum + p.data.length, 0);
+            const uniqueCenters = new Set();
+            persons.forEach(p => p.data.forEach(d => uniqueCenters.add(d.center)));
+            
+            return {
+                totalPersons,
+                totalVotes,
+                totalCenters: uniqueCenters.size,
+                lastUpdated: new Date().toISOString()
+            };
+        }
+        
+        function handleSearch() {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            if (!searchTerm) {
+                showPersons();
+                return;
+            }
+            
+            let html = `<button class="btn btn-secondary" onclick="showPersons()">
+                <i class="fas fa-arrow-right"></i> رجوع للقائمة الرئيسية
+            </button>`;
+            html += `<h2>نتائج البحث عن: ${searchTerm}</h2>`;
+            
+            // Search in persons
+            const filteredPersons = persons.filter(p => 
+                p.name.toLowerCase().includes(searchTerm) || 
+                p.phone.includes(searchTerm) ||
+                p.position.toLowerCase().includes(searchTerm)
+            );
+            
+            if (filteredPersons.length > 0) {
+                html += `<h3>المسؤولون</h3><div class="person-list">`;
+                filteredPersons.forEach((p, i) => {
+                    html += `
+                        <div class="person-item" onclick="showCenters(${i})">
+                            <div class="person-name">${p.name}</div>
+                            <div class="person-phone">${p.phone}</div>
+                            <div style="font-size:0.8rem;color:#666;">${p.position}</div>
+                            <span class="votes-count">${p.data.length} صوت</span>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+            
+            // Search in all data
+            const allResults = [];
+            persons.forEach(person => {
+                person.data.forEach(item => {
+                    if (item.name.toLowerCase().includes(searchTerm) || 
+                        item.id.includes(searchTerm) || 
+                        item.center.toLowerCase().includes(searchTerm)) {
+                        allResults.push({
+                            ...item,
+                            personName: person.name,
+                            personPhone: person.phone,
+                            personPosition: person.position
+                        });
+                    }
+                });
+            });
+            
+            if (allResults.length > 0) {
+                html += `<h3>نتائج البحث في الناخبين</h3>`;
+                html += `<table>
+                    <tr>
+                        <th>#</th>
+                        <th>اسم الناخب</th>
+                        <th>رقم الناخب</th>
+                        <th>المركز الانتخابي</th>
+                        <th>المسؤول</th>
+                        <th class="no-print">إجراءات</th>
+                    </tr>`;
+                
+                allResults.forEach((item, index) => {
+                    html += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${item.name}</td>
+                            <td>${item.id}</td>
+                            <td>${item.center}</td>
+                            <td>${item.personName}</td>
+                            <td class="no-print">
+                                <button class="btn" onclick="showVoterDetails(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                html += `</table>`;
+            }
+            
+            if (filteredPersons.length === 0 && allResults.length === 0) {
+                html += `<div class="card" style="text-align:center;padding:30px;">
+                    <i class="fas fa-search" style="font-size:2rem;color:#ccc;margin-bottom:15px;"></i>
+                    <div>لا توجد نتائج مطابقة للبحث</div>
+                </div>`;
+            }
+            
+            view.innerHTML = html;
+        }
+        
+        function showVoterDetails(voter) {
+            const html = `
+                <button class="btn btn-secondary" onclick="handleSearch()">
+                    <i class="fas fa-arrow-right"></i> رجوع لنتائج البحث
+                </button>
+                <div class="card" style="margin-top:20px;">
+                    <h3>تفاصيل الناخب</h3>
+                    <table style="width:auto;">
+                        <tr>
+                            <td style="font-weight:bold;width:150px;">اسم الناخب:</td>
+                            <td>${voter.name}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:bold;">رقم الناخب:</td>
+                            <td>${voter.id}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:bold;">المركز الانتخابي:</td>
+                            <td>${voter.center}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:bold;">المسؤول:</td>
+                            <td>${voter.personName}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:bold;">هاتف المسؤول:</td>
+                            <td>${voter.personPhone}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:bold;">منصب المسؤول:</td>
+                            <td>${voter.personPosition}</td>
+                        </tr>
+                    </table>
+                </div>
+            `;
+            
+            view.innerHTML = html;
+        }
+        
+        function showPersons() {
+            let html = `<h2>قائمة المسؤولين</h2>`;
+            
+            // Statistics
+            const stats = getSystemStats();
+            
+            html += `
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.totalPersons}</div>
+                        <div class="stat-label">عدد المسؤولين</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.totalVotes}</div>
+                        <div class="stat-label">إجمالي الأصوات</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.totalCenters}</div>
+                        <div class="stat-label">مركز انتخابي</div>
+                    </div>
+                </div>
+            `;
+            
+            html += `<div class="person-list">`;
+            persons.forEach((p, i) => {
+                html += `
+                    <div class="person-item" onclick="showCenters(${i})">
+                        <div class="person-name">${p.name}</div>
+                        <div class="person-phone">${p.phone}</div>
+                        <div style="font-size:0.8rem;color:#666;">${p.position}</div>
+                        <span class="votes-count">${p.data.length} صوت</span>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            view.innerHTML = html;
+        }
+        
+        function showCenters(personIndex) {
+            const person = persons[personIndex];
+            const centersMap = new Map();
+            
+            // Group data by center
+            person.data.forEach(d => {
+                if (!centersMap.has(d.center)) {
+                    centersMap.set(d.center, []);
+                }
+                centersMap.get(d.center).push(d);
+            });
+            
+            // Convert to array and sort by count
+            const centers = Array.from(centersMap.entries())
+                .sort((a, b) => b[1].length - a[1].length);
+            
+            let html = `
+                <button class="btn btn-secondary" onclick="showPersons()">
+                    <i class="fas fa-arrow-right"></i> رجوع للقائمة الرئيسية
+                </button>
+                <div class="center-title">
+                                        ${person.name}</h2>
+                    <div class="badge">${person.data.length} صوت في ${centers.length} مركز</div>
+                </div>
+                
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-value">${person.data.length}</div>
+                        <div class="stat-label">إجمالي الأصوات</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${centers.length}</div>
+                        <div class="stat-label">عدد المراكز</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${centers[0][1].length}</div>
+                        <div class="stat-label">أعلى مركز (${centers[0][0]})</div>
+                    </div>
+                </div>
+                
+                <div class="center-list">`;
+            
+            centers.forEach(([center, voters], idx) => {
+                html += `
+                    <div class="center-item" onclick="showCenterDetails(${personIndex}, '${center.replace(/'/g, "\\'")}')">
+                        <div class="person-name">${center}</div>
+                        <div style="font-size:0.9rem;color:#666;">${voters.length} صوت</div>
+                        <div style="margin-top:10px;">
+                            <span class="badge" style="background:#3498db;">${person.name}</span>
+                            ${idx === 0 ? '<span class="badge badge-gold" style="margin-right:5px;">الأعلى</span>' : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+            view.innerHTML = html;
+        }
+        
+        function showCenterDetails(personIndex, centerName) {
+            const person = persons[personIndex];
+            const centerVoters = person.data.filter(d => d.center === centerName);
+            
+            const html = `
+                <button class="btn btn-secondary" onclick="showCenters(${personIndex})">
+                    <i class="fas fa-arrow-right"></i> رجوع لمراكز ${person.name}
+                </button>
+                
+                <div class="print-center-details">
+                    <div style="text-align:center;margin-bottom:20px;">
+                        <h2>تفاصيل المركز الانتخابي</h2>
+                        <div style="font-size:1.2rem;color:var(--secondary-color);margin:10px 0;">${centerName}</div>
+                        <div style="display:flex;justify-content:space-around;margin:20px 0;">
+                            <div>
+                                <div style="font-size:0.9rem;color:#666;">المسؤول</div>
+                                <div style="font-weight:bold;">${person.name}</div>
+                            </div>
+                            <div>
+                                <div style="font-size:0.9rem;color:#666;">عدد الناخبين</div>
+                                <div style="font-weight:bold;">${centerVoters.length}</div>
+                            </div>
+                            <div>
+                                <div style="font-size:0.9rem;color:#666;">تاريخ الطباعة</div>
+                                <div style="font-weight:bold;">${printDate}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <table>
+                    <tr>
+                        <th>#</th>
+                        <th>اسم الناخب</th>
+                        <th>رقم الناخب</th>
+                        <th class="no-print">إجراءات</th>
+                    </tr>
+                    ${centerVoters.map((voter, idx) => `
+                        <tr>
+                            <td>${idx + 1}</td>
+                            <td>${voter.name}</td>
+                            <td>${voter.id}</td>
+                            <td class="no-print">
+                                <button class="btn" onclick="showVoterDetails(${JSON.stringify({
+                                    ...voter,
+                                    personName: person.name,
+                                    personPhone: person.phone,
+                                    personPosition: person.position
+                                }).replace(/"/g, '&quot;')})">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </table>
+                
+                <div class="no-print" style="text-align:center;margin-top:30px;">
+                    <button class="btn btn-gold" onclick="printCenterDetails()">
+                        <i class="fas fa-print"></i> طباعة تفاصيل المركز
+                    </button>
+                </div>
+            `;
+            
+            view.innerHTML = html;
+        }
+        
+        // Initialize the view
+        showPersons();
+    </script>
+</body>
+</html>
